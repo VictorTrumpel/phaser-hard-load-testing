@@ -39,7 +39,7 @@ export class AttackHitbox {
 
   disable() {
     if (this.rectanle) {
-      this.rectanle?.destroy()
+      this.rectanle.destroy()
     }
   }
 }

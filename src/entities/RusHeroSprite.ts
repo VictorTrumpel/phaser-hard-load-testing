@@ -1,8 +1,13 @@
 import { Animations, Scene } from 'phaser'
 import { PhysicsSprite } from '@shared'
 
+const ATTACK_ANIMATION = 'ATTACK_ANIMATION'
+const ATTACK_ANIMATION_DELAY_AFTER_COMPLETE = 30
+
 export class RusHeroSprite extends PhysicsSprite {
-  static ATTACK_FRAME = 'attack_2'
+  static ATTACK_FRAME = 'swordSplash2'
+
+  private attackSprite: PhysicsSprite
 
   onFrameUpdate: (
     animation: Animations.Animation,
@@ -10,34 +15,46 @@ export class RusHeroSprite extends PhysicsSprite {
   ) => void = () => null
 
   constructor(scene: Scene, x: number, y: number) {
-    super(scene, x, y, 'wolf', 'wolf')
+    super(scene, x, y, 'wolf', '')
     this.setOrigin(0.5, 1)
+
+    this.attackSprite = new PhysicsSprite(scene, x + 30, y, 'swordSplash', 'swordSplash1')
+    this.attackSprite.setScale(0.2)
+    this.attackSprite.getBody().setSize(300, 150)
+    this.attackSprite.getBody().setOffset(200, 120)
+    this.attackSprite.setVisible(false)
+
+    this.createAttackAnimation()
   }
 
-  playIdle() {
-   
-  }
+  playIdle() {}
 
-  playRun() {
-  }
+  playRun() {}
 
   playAttack() {
-    // this.play(ATTACK_ANIMATION, true)
+    this.attackSprite.setVisible(true)
+    this.attackSprite.play(ATTACK_ANIMATION, true)
 
-    // this.on(Phaser.Animations.Events.ANIMATION_UPDATE, this.onFrameUpdate)
+    if (this.flipX) {
+      this.attackSprite.flipX = false
+      this.attackSprite.setPosition(this.x + 45, this.y - 30)
+    } else {
+      this.attackSprite.flipX = true
+      this.attackSprite.setPosition(this.x - 75, this.y - 30)
+    }
 
-    // return new Promise((complete) => {
-    //   this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-    //     this.off(Phaser.Animations.Events.ANIMATION_UPDATE)
+    this.attackSprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, this.onFrameUpdate)
 
-    //     this.scene.time.delayedCall(ATTACK_ANIMATION_DELAY_AFTER_COMPLETE, () => {
-    //       this.setOrigin(0.5, 1)
-    //       this.setHitboxForIdle()
-    //       this.playIdle()
-    //       complete(null)
-    //     })
-    //   })
-    // })
+    return new Promise((complete) => {
+      this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.off(Phaser.Animations.Events.ANIMATION_UPDATE)
+        this.attackSprite.setVisible(false)
+
+        this.scene.time.delayedCall(ATTACK_ANIMATION_DELAY_AFTER_COMPLETE, () => {
+          complete(null)
+        })
+      })
+    })
   }
 
   moveX(speed: number) {
@@ -63,5 +80,20 @@ export class RusHeroSprite extends PhysicsSprite {
   stopMoving() {
     const body = this.getBody()
     body.setVelocity(0)
+  }
+
+  private createAttackAnimation() {
+    const frames = this.attackSprite.anims.generateFrameNames('swordSplash', {
+      prefix: 'swordSplash',
+      start: 1,
+      end: 6,
+    })
+
+    this.attackSprite.anims.create({
+      key: ATTACK_ANIMATION,
+      frames,
+      frameRate: 13,
+      repeat: 0,
+    })
   }
 }

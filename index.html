@@ -5,8 +5,38 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
+    <style>
+      .button-panel {
+        bottom: 50px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      button {
+        display: block;
+        width: 50px;
+        height: 50px;
+      }
+      
+      .line-button {
+        display: flex;
+      }
+
+      .top-button {
+        margin-left: 50px
+      }
+    </style>
   </head>
   <body>
     <script type="module" src="/src/main.ts"></script>
+    <div class="button-panel">
+      <button id="top-button" class="top-button">↑</button>
+      <div class="line-button">    
+        <button id="left-button">←</button>
+        <button id="bottom-button">↓</button>
+        <button id="right-button">→</button>
+      </div>
+    </div>
   </body>
 </html>

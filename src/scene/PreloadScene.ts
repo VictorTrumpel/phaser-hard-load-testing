@@ -1,6 +1,8 @@
 import { Scene } from 'phaser'
 import wolf from '../assets/wolf.png'
 import ork from '../assets/ork.png'
+import swordSplashJson from '../assets/sword-splash/splash.json'
+import swordSplash from '../assets/sword-splash/splash.png'
 
 export class PreloadScene extends Scene {
   constructor() {
@@ -10,6 +12,7 @@ export class PreloadScene extends Scene {
   preload() {
     this.load.image('wolf', wolf)
     this.load.image('ork', ork)
+    this.load.atlas('swordSplash', swordSplash, swordSplashJson)
   }
 
   create() {
